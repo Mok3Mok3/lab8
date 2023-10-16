@@ -49,20 +49,27 @@ public class DbInterface {
     System.out.println("Uploading works_on ssn="+ssn+", pnumber="+pnumber+", hours="+hours);
     //PreparedStatement stmt = conn.prepareStatement("insert into works_on (pno,ssn,hours) values (?,?,?)");
     Statement st = conn.createStatement();
-    ResultSet rs = st.executeQuery("select * from project where pnumber="+pnumber);
+    ResultSet rs = st.executeQuery("select * from works_on where pno="+pnumber+"and ssn="+ssn);
+    PreparedStatement stmt=null;
     if(rs.next()){
-      System.out.println("update an existing project");
-      stmt.execute("update project "+"set pname ='"+projectName+"',"+
-              "dnum = "+dno+"where pnumber="+pnumber+"");
+      System.out.println("update an existing item");
+      stmt = conn.prepareStatement ("update works_on set hours=hours+ ? where pno = ? and ssn=?");
+      stmt.setInt(1, pnumber);
+      stmt.setInt(2, ssn);
+      stmt.setDouble(3, hours);
+      stmt.executeUpdate();
 
     }else{
-      System.out.println("insert a new project");
-      stmt.execute("insert into project (pname,pnumber,plocation,dnum) "+
-              "values ('"+projectName+"',"+pnumber+",'<unknown>',"+dno+")");
+      System.out.println("insert a new item");
+      stmt = conn.prepareStatement ("insert into works_on (pno,ssn,hours) values (?,?,?)");
+      stmt.setInt(1, pnumber);
+      stmt.setInt(2, ssn);
+      stmt.setDouble(3, hours);
+      stmt.executeUpdate();
     }
-    stmt.setInt(1, pnumber);
-    stmt.setInt(2, ssn);
-    stmt.setDouble(3, hours);
-    stmt.executeUpdate();
+
+    st.close();
+    rs.close();
+    stmt.close();
   }
 }

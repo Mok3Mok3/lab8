@@ -64,7 +64,9 @@ public class Upload {
       }
     } catch (Exception e) {
       e.printStackTrace();
-    } 
+    }
+
+    System.out.println();
   }
 
     private static void upload(BufferedReader datafile, Connection conn) throws IOException, SQLException {
